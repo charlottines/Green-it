@@ -1,5 +1,6 @@
 <template>
     <nav class="navbar">
+        <img src="../assets/logo.png"/>
         <h1>Planty</h1>
         <button @click="showModal = true">Connexion</button>
         <LoginRegisterModal v-if="showModal" @close="showModal = false" />
