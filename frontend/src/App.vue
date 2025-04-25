@@ -2,25 +2,22 @@
     <div id="app">
         <Navbar />
         <router-view />
+        <Footer />
     </div>
 </template>
 
 <script>
     import Navbar from './components/Navbar.vue'
+    import Footer from './components/Footer.vue'
 
     export default {
         components: {
-            Navbar
+            Navbar,
+            Footer
         }
     }
 </script>
-  
 
 <style>
     /* Style global du site */
-    body {
-        margin: 0;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #f7f7f7;
-    }
 </style>
