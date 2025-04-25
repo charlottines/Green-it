@@ -7,7 +7,7 @@
 </template>
 
 <script>
-    import LoginRegisterModal from '/src/components/LoginRegisterModal.vue'
+    import LoginRegisterModal from './LoginRegisterModal.vue'
 
     export default {
         components: {
