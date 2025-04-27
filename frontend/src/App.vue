@@ -14,6 +14,14 @@
         components: {
             Navbar,
             Footer
+        },
+
+        mounted() {
+            const user = localStorage.getItem('user');
+            if (!user) {
+                // Si pas connecté, rediriger vers page d'accueil
+                this.$router.push('/');
+            }
         }
     }
 </script>

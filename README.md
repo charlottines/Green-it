@@ -64,14 +64,13 @@ Coordinateur : **Yvan GUIFO FODJO**
 
 - **Front-end** : HTML, CSS, JavaScript, Vue.js
 - **Back-end** : Node.js
-- **Base de données** : MySQL
+- **Base de données** : Railway(MySQL)
 
 ---
 
 ## Pages à développer
 
-- Page d’accueil (présentation du concept)
-- Page de connexion / inscription
+- Page d’accueil (présentation du site)
 - Tableau de bord utilisateur (historique + plante)
 - Page de saisie des actions
 - Page communautaire (classement + interactions sociales)
