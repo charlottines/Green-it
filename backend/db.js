@@ -1,12 +1,14 @@
 const mysql = require('mysql2/promise');
 
 const pool = mysql.createPool({
-    host: 'localhost',
+    host: 'hopper.proxy.rlwy.net',
     user: 'root',
-    password: '', // TODO : Mettre le mot de passe de la connexion mysql
+    password: 'OawidbSWXrkFGRtzXHpjgfSqczqyglcF',
     database: 'Planty',
+    port: 44431,
     waitForConnections: true,
-    connectionLimit: 10
+    connectionLimit: 10,
+    queueLimit: 0
 });
 
 module.exports = pool;
