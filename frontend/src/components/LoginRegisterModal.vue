@@ -2,17 +2,23 @@
     <div class="modal-backdrop" @click.self="close">
         <div class="modal-content">
             <button class="close" @click="close">✕</button>
-        
+
             <div class="tabs">
-                <button @click="tab = 'login'" :class="{ active: tab === 'login' }">Se Connecter</button>
-                <button @click="tab = 'register'" :class="{ active: tab === 'register' }">Créer un Compte</button>
+                <button v-if="tab !== 'login'" @click="tab = 'login'" :class="{ active: tab === 'login' }">
+                    Se Connecter
+                </button>
+
+                <button v-if="tab !== 'register'" @click="tab = 'register'" :class="{ active: tab === 'register' }">
+                    Créer un Compte
+                </button>
             </div>
-        
+
             <LoginForm v-if="tab === 'login'" @close="close" />
             <RegisterForm v-else @close="close" />
         </div>
     </div>
 </template>
+  
   
 <script>
     import LoginForm from './LoginForm.vue'
