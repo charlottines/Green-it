@@ -72,7 +72,7 @@
                 }
 
                 try {
-                    const response = await fetch(`https://green-it-production.up.railway.app/api/user/${user.id}/groups`);
+                    const response = await fetch(`http://localhost:3000/api/user/${user.id}/groups`);
                     const data = await response.json();
                     if (Array.isArray(data)) {
                         this.groups = data;
@@ -94,7 +94,7 @@
                 }
 
                 try {
-                    const response = await fetch('https://green-it-production.up.railway.app/api/groups/request', {
+                    const response = await fetch('http://localhost:3000/api/groups/request', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
@@ -131,7 +131,7 @@
                 }
 
                 try {
-                    const response = await fetch('https://green-it-production.up.railway.app/api/groups/create', {
+                    const response = await fetch('http://localhost:3000/api/groups/create', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({

@@ -3,7 +3,6 @@
         <h2>Groupe :</h2>
 
         <div v-if="role === 'admin'" class="admin-actions">
-
             <div v-if="!isEditing">
                 <p><strong>Nom :</strong> {{ groupName }}</p>
                 <p><strong>Description :</strong> {{ groupDescription }}</p>
@@ -45,10 +44,20 @@
         <div class="my-plant">
             <h3>Ma Plante</h3>
             <p>Croissance : {{ growth }}%</p>
+
+            <!-- Choix de la plante -->
+            <div v-if="plantId === null" class="choose-plant">
+                <h4>Choisissez votre plante :</h4>
+                <button @click="choosePlant(1)">Plante Basique (id 1)</button>
+                <button @click="choosePlant(2)">Cactus (id 2)</button>
+                <button @click="choosePlant(3)">Tournesol (id 3)</button>
+            </div>
+            <div v-else>
+                <p><strong>Votre plante :</strong> {{ plantName }}</p>
+            </div>
         </div>
     </div>
 </template>
-
 
 <script>
 export default {
@@ -62,7 +71,9 @@ export default {
             growth: 0,
             editedName: '',
             editedDescription: '',
-            isEditing: false
+            isEditing: false,
+            plantId: null,
+            plantName: '',
         }
     },
 
@@ -77,23 +88,28 @@ export default {
         const groupId = this.$route.params.id;
 
         try {
-            const responseGroup = await fetch(`https://green-it-production.up.railway.app/api/groups/${groupId}/user/${user.id}`);
+            const responseGroup = await fetch(`http://localhost:3000/api/groups/${groupId}/user/${user.id}`);
             const dataGroup = await responseGroup.json();
             this.groupName = dataGroup.groupName || '';
-            this.groupDescription = dataGroup.groupDescription || ''; // Si tu ajoutes la description dans ta DB
+            this.groupDescription = dataGroup.groupDescription || '';
             this.joinCode = dataGroup.joinCode || '';
             this.role = dataGroup.role || '';
 
             this.editedName = this.groupName;
             this.editedDescription = this.groupDescription;
 
-            const responseMembers = await fetch(`https://green-it-production.up.railway.app/api/groups/${groupId}/members`);
+            const responseMembers = await fetch(`http://localhost:3000/api/groups/${groupId}/members`);
             const dataMembers = await responseMembers.json();
             this.members = dataMembers || [];
 
-            const responsePlant = await fetch(`https://green-it-production.up.railway.app/api/groups/${groupId}/plant/${user.id}`);
+            const responsePlant = await fetch(`http://localhost:3000/api/groups/${groupId}/plant/${user.id}`);
             const dataPlant = await responsePlant.json();
             this.growth = dataPlant.growth || 0;
+            this.plantId = dataPlant.plant_id ?? null;
+
+            if (this.plantId !== null) {
+                this.plantName = this.getPlantName(this.plantId);
+            }
 
         } catch (error) {
             console.error('Erreur lors du chargement du groupe:', error);
@@ -104,7 +120,7 @@ export default {
         async saveChanges() {
             try {
                 const groupId = this.$route.params.id;
-                const response = await fetch(`https://green-it-production.up.railway.app/api/groups/${groupId}`, {
+                const response = await fetch(`http://localhost:3000/api/groups/${groupId}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -138,7 +154,7 @@ export default {
             if (confirm('Êtes-vous sûr de vouloir supprimer ce groupe ? Cette action est irréversible.')) {
                 try {
                     const groupId = this.$route.params.id;
-                    const response = await fetch(`https://green-it-production.up.railway.app/api/groups/${groupId}`, {
+                    const response = await fetch(`http://localhost:3000/api/groups/${groupId}`, {
                         method: 'DELETE'
                     });
 
@@ -153,6 +169,41 @@ export default {
                 } catch (error) {
                     console.error('Erreur lors de la suppression du groupe:', error);
                 }
+            }
+        },
+
+        getPlantName(id) {
+            switch (id) {
+                case 1: return 'Plante basique';
+                case 2: return 'Cactus';
+                case 3: return 'Tournesol';
+                default: return 'Inconnu';
+            }
+        },
+
+        async choosePlant(plantId) {
+            const user = JSON.parse(localStorage.getItem('user'));
+            const groupId = this.$route.params.id;
+
+            try {
+                const response = await fetch(`http://localhost:3000/api/groups/${groupId}/choose-plant/${user.id}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ plantId })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    this.plantId = plantId;
+                    this.plantName = this.getPlantName(plantId);
+                    alert('Votre plante a été adoptée avec succès ! 🌱');
+                } else {
+                    alert(data.message);
+                }
+            } catch (error) {
+                console.error('Erreur lors du choix de la plante:', error);
+                alert('Erreur lors du choix de la plante.');
             }
         }
     }

@@ -74,6 +74,7 @@ async function setupDatabase() {
         await pool.query(
             `CREATE TABLE IF NOT EXISTS plants (
                 id INT AUTO_INCREMENT PRIMARY KEY,
+                plant_id INT DEFAULT NULL,
                 user_id INT NOT NULL,
                 group_id INT NOT NULL,
                 growth INT DEFAULT 0,
@@ -117,5 +118,5 @@ app.get('/', (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`🚀 Serveur démarré sur le port ${PORT}`);
+    console.log(`🚀 Serveur démarré sur http://localhost:${PORT}`);
 });

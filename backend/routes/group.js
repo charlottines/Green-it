@@ -69,8 +69,8 @@ router.post('/groups/request', async (req, res) => {
         }
 
         await pool.query(
-            'INSERT INTO group_requests (group_id, user_id) VALUES (?, ?)',
-            [group.id, userId]
+            'INSERT INTO group_requests (group_id, user_id, status) VALUES (?, ?, ?)',
+            [group.id, userId, 'pending']
         );
 
         res.status(201).json({ success: true, message: 'Demande envoyée.' });
@@ -118,7 +118,7 @@ router.post('/groups/:groupId/accept/:userId', async (req, res) => {
         res.status(200).json({ success: true, message: 'Utilisateur accepté.' });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ success: false, message: 'Erreur lors de l\'acceptation.'});
+        res.status(500).json({ success: false, message: 'Erreur lors de l\'acceptation.' });
     }
 });
 
@@ -192,7 +192,7 @@ router.get('/groups/:groupId/plant/:userId', async (req, res) => {
 
     try {
         const [plants] = await pool.query(
-            `SELECT growth FROM plants WHERE user_id = ? AND group_id = ?`,
+            `SELECT growth, plant_id FROM plants WHERE user_id = ? AND group_id = ?`,
             [userId, groupId]
         );
 
@@ -206,8 +206,6 @@ router.get('/groups/:groupId/plant/:userId', async (req, res) => {
         res.status(500).json({ message: 'Erreur lors de la récupération de la plante.' });
     }
 });
-
-module.exports = router;
 
 // Supprimer un groupe
 router.delete('/groups/:groupId', async (req, res) => {
@@ -235,3 +233,39 @@ router.put('/groups/:groupId', async (req, res) => {
         res.status(500).json({ success: false, message: 'Erreur lors de la modification du groupe.' });
     }
 });
+
+// 🌱 Choisir une plante dans un groupe
+router.post('/groups/:groupId/choose-plant/:userId', async (req, res) => {
+    const { groupId, userId } = req.params;
+    const { plantId } = req.body;
+
+    try {
+        const [existingPlant] = await pool.query(
+            'SELECT * FROM plants WHERE user_id = ? AND group_id = ?',
+            [userId, groupId]
+        );
+
+        if (existingPlant.length > 0 && existingPlant[0].plant_id) {
+            return res.status(400).json({ success: false, message: 'Vous avez déjà choisi une plante.' });
+        }
+
+        if (existingPlant.length === 0) {
+            await pool.query(
+                'INSERT INTO plants (user_id, group_id, growth, plant_id) VALUES (?, ?, ?, ?)',
+                [userId, groupId, 0, plantId]
+            );
+        } else {
+            await pool.query(
+                'UPDATE plants SET plant_id = ? WHERE user_id = ? AND group_id = ?',
+                [plantId, userId, groupId]
+            );
+        }
+
+        res.status(200).json({ success: true, message: 'Plante choisie avec succès.' });
+    } catch (error) {
+        console.error('Erreur lors du choix de la plante :', error);
+        res.status(500).json({ success: false, message: 'Erreur serveur lors du choix de la plante.' });
+    }
+});
+
+module.exports = router;
