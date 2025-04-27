@@ -4,6 +4,8 @@ const app = express();
 const pool = require('./db');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
+const groupRoutes = require('./routes/group');
+
 
 app.use(cors());
 app.use(express.json());
@@ -107,6 +109,7 @@ setupDatabase();
 // Routes
 app.use('/api', authRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api', groupRoutes);
 
 app.get('/', (req, res) => {
     res.send('Bienvenue sur l\'API Planty 🌱');
