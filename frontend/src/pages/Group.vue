@@ -77,7 +77,7 @@ export default {
         const groupId = this.$route.params.id;
 
         try {
-            const responseGroup = await fetch(`http://localhost:3000/api/groups/${groupId}/user/${user.id}`);
+            const responseGroup = await fetch(`https://green-it-production.up.railway.app/api/groups/${groupId}/user/${user.id}`);
             const dataGroup = await responseGroup.json();
             this.groupName = dataGroup.groupName || '';
             this.groupDescription = dataGroup.groupDescription || ''; // Si tu ajoutes la description dans ta DB
@@ -87,11 +87,11 @@ export default {
             this.editedName = this.groupName;
             this.editedDescription = this.groupDescription;
 
-            const responseMembers = await fetch(`http://localhost:3000/api/groups/${groupId}/members`);
+            const responseMembers = await fetch(`https://green-it-production.up.railway.app/api/groups/${groupId}/members`);
             const dataMembers = await responseMembers.json();
             this.members = dataMembers || [];
 
-            const responsePlant = await fetch(`http://localhost:3000/api/groups/${groupId}/plant/${user.id}`);
+            const responsePlant = await fetch(`https://green-it-production.up.railway.app/api/groups/${groupId}/plant/${user.id}`);
             const dataPlant = await responsePlant.json();
             this.growth = dataPlant.growth || 0;
 
@@ -104,7 +104,7 @@ export default {
         async saveChanges() {
             try {
                 const groupId = this.$route.params.id;
-                const response = await fetch(`http://localhost:3000/api/groups/${groupId}`, {
+                const response = await fetch(`https://green-it-production.up.railway.app/api/groups/${groupId}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -138,7 +138,7 @@ export default {
             if (confirm('Êtes-vous sûr de vouloir supprimer ce groupe ? Cette action est irréversible.')) {
                 try {
                     const groupId = this.$route.params.id;
-                    const response = await fetch(`http://localhost:3000/api/groups/${groupId}`, {
+                    const response = await fetch(`https://green-it-production.up.railway.app/api/groups/${groupId}`, {
                         method: 'DELETE'
                     });
 
