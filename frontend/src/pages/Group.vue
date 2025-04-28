@@ -147,14 +147,14 @@ export default {
         const groupId = this.$route.params.id;
 
         try {
-            const responseGroup = await fetch(`http://localhost:3000/api/groups/${groupId}/user/${user.id}`);
+            const responseGroup = await fetch(`http://https://green-it-production.up.railway.app/api/groups/${groupId}/user/${user.id}`);
             const dataGroup = await responseGroup.json();
             this.groupName = dataGroup.groupName || '';
             this.joinCode = dataGroup.joinCode || '';
             this.role = dataGroup.role || '';
 
             if (this.role !== 'admin') {
-                const responsePlant = await fetch(`http://localhost:3000/api/groups/${groupId}/plant/${user.id}`);
+                const responsePlant = await fetch(`http://https://green-it-production.up.railway.app/api/groups/${groupId}/plant/${user.id}`);
                 const dataPlant = await responsePlant.json();
                 this.growth = dataPlant.growth || 0;
                 this.plantId = dataPlant.plant_id ?? null;
@@ -164,19 +164,19 @@ export default {
                     this.updatePlantImage();
                 }
 
-                const responsePoints = await fetch(`http://localhost:3000/api/groups/${groupId}/points/${user.id}`);
+                const responsePoints = await fetch(`http://https://green-it-production.up.railway.app/api/groups/${groupId}/points/${user.id}`);
                 const dataPoints = await responsePoints.json();
                 this.points = dataPoints.points || 0;
             }
 
-            const responseMembers = await fetch(`http://localhost:3000/api/groups/${groupId}/members`);
+            const responseMembers = await fetch(`http://https://green-it-production.up.railway.app/api/groups/${groupId}/members`);
             this.members = await responseMembers.json();
 
             if (this.role === 'admin') {
-                const responseRequests = await fetch(`http://localhost:3000/api/groups/${groupId}/requests`);
+                const responseRequests = await fetch(`http://https://green-it-production.up.railway.app/api/groups/${groupId}/requests`);
                 this.requests = await responseRequests.json();
 
-                const responseActions = await fetch(`http://localhost:3000/api/groups/${groupId}/actions`);
+                const responseActions = await fetch(`http://https://green-it-production.up.railway.app/api/groups/${groupId}/actions`);
                 this.actions = await responseActions.json();
             }
         } catch (error) {
@@ -222,7 +222,7 @@ export default {
             }
 
             try {
-                const response = await fetch(`http://localhost:3000/api/groups/${groupId}/actions/${user.id}`, {
+                const response = await fetch(`http://https://green-it-production.up.railway.app/api/groups/${groupId}/actions/${user.id}`, {
                     method: 'POST',
                     body: formData
                 });
@@ -246,7 +246,7 @@ export default {
             const groupId = this.$route.params.id;
 
             try {
-                const response = await fetch(`http://localhost:3000/api/groups/${groupId}/use-points/${user.id}`, {
+                const response = await fetch(`http://https://green-it-production.up.railway.app/api/groups/${groupId}/use-points/${user.id}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ usedPoints: this.points })
@@ -271,7 +271,7 @@ export default {
             const groupId = this.$route.params.id;
 
             try {
-                const response = await fetch(`http://localhost:3000/api/groups/${groupId}/choose-plant/${user.id}`, {
+                const response = await fetch(`http://https://green-it-production.up.railway.app/api/groups/${groupId}/choose-plant/${user.id}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ plantId })
@@ -294,7 +294,7 @@ export default {
         async acceptRequest(userId) {
             const groupId = this.$route.params.id;
             try {
-                const response = await fetch(`http://localhost:3000/api/groups/${groupId}/accept/${userId}`, {
+                const response = await fetch(`http://https://green-it-production.up.railway.app/api/groups/${groupId}/accept/${userId}`, {
                     method: 'POST'
                 });
 
@@ -314,7 +314,7 @@ export default {
         async rejectRequest(userId) {
             const groupId = this.$route.params.id;
             try {
-                const response = await fetch(`http://localhost:3000/api/groups/${groupId}/reject/${userId}`, {
+                const response = await fetch(`http://https://green-it-production.up.railway.app/api/groups/${groupId}/reject/${userId}`, {
                     method: 'POST'
                 });
 
@@ -334,7 +334,7 @@ export default {
         async assignPoints(actionId, points) {
             const groupId = this.$route.params.id;
             try {
-                const response = await fetch(`http://localhost:3000/api/groups/${groupId}/assign-points/${actionId}`, {
+                const response = await fetch(`http://https://green-it-production.up.railway.app/api/groups/${groupId}/assign-points/${actionId}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ points })
@@ -353,7 +353,7 @@ export default {
         },
 
         getImageUrl(imagePath) {
-            return `http://localhost:3000${imagePath}`;
+            return `http://https://green-it-production.up.railway.app${imagePath}`;
         }
     }
 }
