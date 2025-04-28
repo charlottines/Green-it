@@ -5,10 +5,12 @@ const pool = require('./db');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
 const groupRoutes = require('./routes/group');
+const { cleanupOldActions } = require('./routes/group');
 
 
 app.use(cors());
 app.use(express.json());
+app.use('/uploads', express.static('uploads'));
 
 // Vérifie que la base de donnée en ligne est accessible
 async function testDatabaseConnection() {
@@ -78,6 +80,7 @@ async function setupDatabase() {
                 user_id INT NOT NULL,
                 group_id INT NOT NULL,
                 growth INT DEFAULT 0,
+                points INT DEFAULT 0,
                 last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
                 FOREIGN KEY (group_id) REFERENCES \`groups\`(id) ON DELETE CASCADE
@@ -90,6 +93,7 @@ async function setupDatabase() {
                 user_id INT NOT NULL,
                 group_id INT NOT NULL,
                 description TEXT NOT NULL,
+                image_path VARCHAR(255) DEFAULT NULL,
                 impact INT DEFAULT 0,
                 status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -120,3 +124,8 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`🚀 Serveur démarré sur http://localhost:${PORT}`);
 });
+
+// Nettoyage automatique toutes les 24h
+setInterval(() => {
+    cleanupOldActions();
+}, 86400000); // 24h

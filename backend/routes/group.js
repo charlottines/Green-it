@@ -1,11 +1,47 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../db');
+const multer = require('multer');
+const sharp = require('sharp');
+const fs = require('fs');
 
-// Fonction utilitaire : Génère un code d'invitation à 6 chiffres
+const upload = multer({ dest: 'uploads/' }); // Dossier temporaire pour images
+
+/*
+    Fonctions
+*/
+
+// Générer un code de groupe aléatoire à 6 chiffres
 function generateJoinCode() {
     return Math.floor(100000 + Math.random() * 900000).toString();
 }
+
+// Supprimer les actions expirées (plus de 7 jours)
+async function cleanupOldActions() {
+    try {
+        const [oldActions] = await pool.query(
+            `SELECT id, image_path FROM actions 
+             WHERE status = 'pending' AND created_at < NOW() - INTERVAL 7 DAY`
+        );
+
+        for (const action of oldActions) {
+            if (action.image_path) {
+                const filePath = `.${action.image_path}`;
+                if (fs.existsSync(filePath)) {
+                    fs.unlinkSync(filePath);
+                }
+            }
+
+            // Supprimer l'action elle-même
+            await pool.query('DELETE FROM actions WHERE id = ?', [action.id]);
+        }
+
+        console.log(`✅ Nettoyage terminé : ${oldActions.length} actions supprimées.`);
+    } catch (error) {
+        console.error('Erreur lors du nettoyage des actions expirées:', error);
+    }
+}
+
 
 /*
     ROUTES DE GESTION DES GROUPES
@@ -234,7 +270,7 @@ router.put('/groups/:groupId', async (req, res) => {
     }
 });
 
-// 🌱 Choisir une plante dans un groupe
+// Choisir une plante dans un groupe
 router.post('/groups/:groupId/choose-plant/:userId', async (req, res) => {
     const { groupId, userId } = req.params;
     const { plantId } = req.body;
@@ -251,8 +287,8 @@ router.post('/groups/:groupId/choose-plant/:userId', async (req, res) => {
 
         if (existingPlant.length === 0) {
             await pool.query(
-                'INSERT INTO plants (user_id, group_id, growth, plant_id) VALUES (?, ?, ?, ?)',
-                [userId, groupId, 0, plantId]
+                'INSERT INTO plants (user_id, group_id, growth, points, plant_id) VALUES (?, ?, ?, ?, ?)',
+                [userId, groupId, 0, 0, plantId]
             );
         } else {
             await pool.query(
@@ -267,5 +303,147 @@ router.post('/groups/:groupId/choose-plant/:userId', async (req, res) => {
         res.status(500).json({ success: false, message: 'Erreur serveur lors du choix de la plante.' });
     }
 });
+
+router.get('/groups/:groupId/points/:userId', async (req, res) => {
+    const { groupId, userId } = req.params;
+
+    try {
+        const [[plant]] = await pool.query(
+            'SELECT points FROM plants WHERE user_id = ? AND group_id = ?',
+            [userId, groupId]
+        );
+
+        if (!plant) {
+            return res.status(404).json({ message: "Plante non trouvée." });
+        }
+
+        res.status(200).json({ points: plant.points });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Erreur lors de la récupération des points.' });
+    }
+});
+
+router.post('/groups/:groupId/use-points/:userId', async (req, res) => {
+    const { groupId, userId } = req.params;
+    const { usedPoints } = req.body;
+
+    try {
+        const [[plant]] = await pool.query(
+            'SELECT points, growth FROM plants WHERE user_id = ? AND group_id = ?',
+            [userId, groupId]
+        );
+
+        if (!plant || plant.points < usedPoints) {
+            return res.status(400).json({ message: "Pas assez de points." });
+        }
+
+        const newPoints = plant.points - usedPoints;
+        const newGrowth = Math.min(plant.growth + usedPoints, 100); // limite 100%
+
+        await pool.query(
+            'UPDATE plants SET points = ?, growth = ? WHERE user_id = ? AND group_id = ?',
+            [newPoints, newGrowth, userId, groupId]
+        );
+
+        res.status(200).json({ success: true, newPoints, newGrowth });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Erreur lors de l\'utilisation des points.' });
+    }
+});
+
+// Enregistrer une nouvelle action (titre, description, image)
+router.post('/groups/:groupId/actions/:userId', upload.single('image'), async (req, res) => {
+    const { groupId, userId } = req.params;
+    const { title, description } = req.body;
+
+    let imagePath = null;
+
+    try {
+        if (req.file) {
+            const filename = `action-${Date.now()}.webp`;
+            await sharp(req.file.path)
+                .resize(500, 500, { fit: 'inside' }) // max 500x500px
+                .webp({ quality: 80 })               // compression qualité 80%
+                .toFile(`uploads/${filename}`);
+
+            // Supprimer l'image originale
+            fs.unlinkSync(req.file.path);
+
+            imagePath = `/uploads/${filename}`; // chemin pour accéder à l'image
+        }
+
+        await pool.query(
+            'INSERT INTO actions (user_id, group_id, description, image_path, impact, status, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW())',
+            [userId, groupId, description, imagePath, 0, 'pending']
+        );
+
+        res.status(201).json({ success: true, message: "Action enregistrée avec succès." });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Erreur lors de l'enregistrement de l'action." });
+    }
+});
+
+router.get('/groups/:groupId/actions', async (req, res) => {
+    const { groupId } = req.params;
+
+    try {
+        const [actions] = await pool.query(
+            `SELECT actions.id, users.username, actions.description, actions.image_path, actions.status
+            FROM actions
+            JOIN users ON users.id = actions.user_id
+            WHERE actions.group_id = ? AND actions.status = 'pending'`,
+            [groupId]
+        );
+
+        res.status(200).json(actions);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Erreur lors de la récupération des actions." });
+    }
+});
+
+router.post('/groups/:groupId/assign-points/:actionId', async (req, res) => {
+    const { groupId, actionId } = req.params;
+    const { points } = req.body;
+
+    try {
+        const [[action]] = await pool.query('SELECT user_id, image_path FROM actions WHERE id = ?', [actionId]);
+
+        if (!action) {
+            return res.status(404).json({ message: "Action non trouvée." });
+        }
+
+        const userId = action.user_id;
+
+        // Mettre à jour les points de la plante de l'utilisateur
+        await pool.query(
+            'UPDATE plants SET points = points + ? WHERE user_id = ? AND group_id = ?',
+            [points, userId, groupId]
+        );
+
+        // Marquer l'action comme approuvée
+        await pool.query(
+            'UPDATE actions SET impact = ?, status = ? WHERE id = ?',
+            [points, 'approved', actionId]
+        );
+
+        // Supprimer l'image associée si elle existe
+        if (action.image_path) {
+            const imagePath = `.${action.image_path}`;
+            if (fs.existsSync(imagePath)) {
+                fs.unlinkSync(imagePath);
+            }
+        }
+
+        res.status(200).json({ success: true, message: "Points attribués avec succès." });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Erreur lors de l'attribution des points." });
+    }
+});
+
 
 module.exports = router;
