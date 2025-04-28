@@ -26,6 +26,13 @@
     }
 </script>
 
-<style>
-    /* Style global du site */
+<style scoped>
+    #app {
+        min-height: 100vh;
+        background-color: #1e1e1e;
+        font-family: 'Arial', sans-serif;
+        color: #f0f0f0;
+        padding: 16px;
+        box-sizing: border-box;
+    }
 </style>

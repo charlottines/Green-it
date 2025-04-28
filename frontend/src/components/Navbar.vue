@@ -1,6 +1,9 @@
 <template>
     <nav class="navbar">
-        <h1>Planty</h1>
+        <div class="navbar-left">
+            <img src="@/assets/logo.png" alt="Logo" class="logo" />
+            <h1 class="site-title">Planty</h1>
+        </div>
 
         <div v-if="isLoggedIn">
             <router-link to="/" class="nav-link">Accueil</router-link>
@@ -57,3 +60,53 @@
         }
     }
 </script>
+
+<style scoped>
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #4CAF50;
+        padding: 10px 20px;
+        color: white;
+        font-family: Arial, sans-serif;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        border-radius: 20px;
+    }
+
+    .navbar h1 {
+        font-size: 1.5rem;
+        margin: 0;
+    }
+
+    .nav-link {
+        margin: 0 10px;
+        text-decoration: none;
+        color: white;
+        font-weight: bold;
+        transition: color 0.3s ease;
+    }
+
+    .nav-link:hover {
+        color: #d4f1d4;
+    }
+
+    .welcome {
+        margin-right: 15px;
+        font-style: italic;
+    }
+
+    .logout-button {
+        background-color: #f44336;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .logout-button:hover {
+        background-color: #d32f2f;
+    }
+</style>

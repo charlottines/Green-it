@@ -304,6 +304,7 @@ router.post('/groups/:groupId/choose-plant/:userId', async (req, res) => {
     }
 });
 
+//
 router.get('/groups/:groupId/points/:userId', async (req, res) => {
     const { groupId, userId } = req.params;
 
@@ -324,6 +325,7 @@ router.get('/groups/:groupId/points/:userId', async (req, res) => {
     }
 });
 
+// 
 router.post('/groups/:groupId/use-points/:userId', async (req, res) => {
     const { groupId, userId } = req.params;
     const { usedPoints } = req.body;
