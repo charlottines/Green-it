@@ -5,7 +5,6 @@
         <div v-if="plants.length > 0" class="plants-list">
             <div v-for="plant in plants" :key="plant.groupName" class="plant-card">
                 <h3>{{ getPlantName(plant.plant_id) }}</h3>
-                <img :src="getPlantImage(plant.plant_id, plant.growth)" alt="Plante" class="plant-image" loading="lazy" />
                 <p><strong>Groupe :</strong> {{ plant.groupName }}</p>
                 <p><strong>Croissance :</strong> {{ plant.growth }}%</p>
             </div>
