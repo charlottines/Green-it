@@ -44,7 +44,6 @@
         <button @click="deleteAccount" class="account-button delete">Supprimer mon compte ❌</button>
     </div>
 </template>
-  
 
 <script>
 export default {
@@ -67,7 +66,16 @@ export default {
 
         try {
             const response = await fetch(`https://green-it-production.up.railway.app/api/user/${user.id}/plants`);
-            this.plants = await response.json();
+            const plantsData = await response.json();
+
+            this.plants = await Promise.all(plantsData.map(async plant => {
+                const groupRes = await fetch(`https://green-it-production.up.railway.app/api/groups/${plant.group_id}/user/${user.id}`);
+                const groupData = await groupRes.json();
+                return {
+                    ...plant,
+                    groupName: groupData.groupName || 'Groupe inconnu'
+                };
+            }));
         } catch (error) {
             console.error('Erreur de chargement des plantes:', error);
         }
@@ -171,7 +179,7 @@ export default {
             } else if (growth >= 70) {
                 stage = 3;
             }
-            return `/plant${plantId}-${stage}.png`;
+            return `/plant${this.plantId}-${stage}.png`;
         }
     }
 }
