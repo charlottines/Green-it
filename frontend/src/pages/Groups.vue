@@ -202,11 +202,6 @@ h2 {
     flex-direction: column;
 }
 
-.group-card:hover {
-    transform: translateY(-5px);
-    background: rgba(129, 199, 132, 0.25);
-}
-
 .group-card h3 {
     color: rgb(129, 199, 132);
     margin-bottom: 10px;

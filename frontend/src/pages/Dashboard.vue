@@ -10,6 +10,7 @@
                 <p><strong>Croissance :</strong> {{ plant.growth }}%</p>
             </div>
         </div>
+
         <div v-else>
             <p>Vous n'avez pas encore de plante.</p>
         </div>
@@ -20,9 +21,11 @@
 
         <button @click="toggleModifyForm" class="account-button">Modifier mon compte</button>
 
-        <div v-if="showModifyForm" class="modify-form">
-            <h4>Modifier mon Compte</h4>
-            <form @submit.prevent="submitAccountChanges">
+        <!-- Onglet modal Modifier compte -->
+        <div v-if="showModifyForm" class="modify-overlay">
+            <div class="modify-form">
+                <h4>Modifier mon Compte</h4>
+                <form @submit.prevent="submitAccountChanges">
                 <label>Nouveau Nom d'utilisateur :</label>
                 <input type="text" v-model="newUsername" placeholder="Nouveau pseudo" />
 
@@ -33,12 +36,15 @@
                 <input type="password" v-model="newPassword" placeholder="Nouveau mot de passe" />
 
                 <button type="submit" class="account-button">Enregistrer</button>
-            </form>
+                </form>
+                <button @click="toggleModifyForm" class="account-button delete" style="margin-top: 10px;">Fermer</button>
+            </div>
         </div>
 
         <button @click="deleteAccount" class="account-button delete">Supprimer mon compte ❌</button>
     </div>
 </template>
+  
 
 <script>
 export default {
@@ -172,62 +178,131 @@ export default {
 </script>
 
 <style scoped>
-    .dashboard-page {
-        padding: 20px;
-    }
+.dashboard-page {
+    min-height: calc(100vh - 100px);
+    background-color: rgb(30, 30, 30);
+    padding: 20px;
+    color: white;
+    font-family: Arial, sans-serif;
+}
 
-    .plants-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-    }
+h2, h3 {
+    text-align: center;
+    color: rgb(129, 199, 132);
+    margin-bottom: 30px;
+}
 
-    .plant-card {
-        background-color: #8fffa5;
-        padding: 15px;
-        border-radius: 10px;
-        width: 200px;
-    }
+/* Liste des plantes */
+.plants-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    margin-bottom: 40px;
+}
 
-    .account-button {
-        padding: 10px 20px;
-        margin: 10px 5px;
-        border-radius: 5px;
-        cursor: pointer;
-        font-weight: bold;
-    }
+/* Carte pour chaque plante */
+.plant-card {
+    background: rgba(129, 199, 132, 0.15);
+    border: 1px solid rgba(129, 199, 132, 0.4);
+    border-radius: 15px;
+    width: 250px;
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
 
-    .account-button.delete {
-        background-color: #e57373;
-        color: white;
-    }
+.plant-card:hover {
+    transform: translateY(-5px);
+    background: rgba(129, 199, 132, 0.25);
+}
 
-    .modify-form {
-        margin-top: 20px;
-        padding: 20px;
-        background-color: #f5f5f5;
-        border-radius: 10px;
-        width: 300px;
-    }
+.plant-card h3 {
+    color: rgb(129, 199, 132);
+    margin-bottom: 10px;
+}
 
-    .modify-form label {
-        display: block;
-        margin-bottom: 5px;
-        font-weight: bold;
-    }
+.plant-card p {
+    font-size: 1rem;
+    margin-bottom: 5px;
+}
 
-    .modify-form input {
-        width: 100%;
-        margin-bottom: 10px;
-        padding: 8px;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-    }
+.plant-image {
+    width: 100%;
+    height: auto;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
 
-    .plant-image {
-        width: 100%;
-        height: auto;
-        margin-bottom: 10px;
-        border-radius: 5px;
-    }
+/* Boutons */
+.account-button {
+    padding: 10px 20px;
+    margin: 10px 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    background-color: rgb(129, 199, 132);
+    color: black;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+.account-button:hover {
+    background-color: rgb(102, 187, 106);
+}
+
+.account-button.delete {
+    background-color: #e57373;
+    color: white;
+}
+
+/* Modal pour modifier le compte */
+.modify-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Formulaire dans le modal */
+.modify-form {
+    background: #1e1e1e;
+    padding: 30px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    color: white;
+    text-align: center;
+}
+
+.modify-form h4 {
+    margin-bottom: 20px;
+    color: rgb(129, 199, 132);
+}
+
+.modify-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    text-align: left;
+}
+
+.modify-form input {
+    width: 100%;
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #555;
+    background-color: #2c2c2c;
+    color: white;
+}
 </style>
+
