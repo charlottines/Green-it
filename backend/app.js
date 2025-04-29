@@ -7,21 +7,20 @@ const userRoutes = require('./routes/user');
 const groupRoutes = require('./routes/group');
 const { cleanupOldActions } = require('./routes/group');
 
-app.use(express.json());
-
 // Autoriser les requêtes CORS depuis le frontend
-const corsOptions = {
-    origin: 'https://green-it-seven.vercel.app',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true,
-    optionsSuccessStatus: 200
-};
-
-app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
-
+app.use(cors());
+app.use(express.json());
 app.use('/uploads', express.static('uploads'));
+
+// Ping régulier pour empêcher Railway de dormir
+setInterval(async () => {
+    try {
+        const [res] = await pool.query('SELECT 1');
+        console.log('⏱️ Ping réussi : Railway réveillé');
+    } catch (err) {
+        console.error('⛔ Erreur ping Railway:', err);
+    }
+}, 5 * 60 * 1000); // 5 minutes
 
 // Vérifie que la base de donnée en ligne est accessible
 async function testDatabaseConnection() {
@@ -130,16 +129,6 @@ app.use('/api', groupRoutes);
 app.get('/', (req, res) => {
     res.send('Bienvenue sur l\'API Planty 🌱');
 });
-
-// Ping régulier pour empêcher Railway de dormir
-setInterval(async () => {
-    try {
-        const [res] = await pool.query('SELECT 1');
-        console.log('⏱️ Ping réussi : Railway réveillé');
-    } catch (err) {
-        console.error('⛔ Erreur ping Railway:', err);
-    }
-}, 5 * 60 * 1000); // 5 minutes
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
