@@ -7,9 +7,20 @@ const userRoutes = require('./routes/user');
 const groupRoutes = require('./routes/group');
 const { cleanupOldActions } = require('./routes/group');
 
-// Autoriser les requêtes CORS depuis le frontend
-app.use(cors());
 app.use(express.json());
+
+// Autoriser les requêtes CORS depuis le frontend
+const corsOptions = {
+    origin: 'https://green-it-seven.vercel.app',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+    optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
+
 app.use('/uploads', express.static('uploads'));
 
 // Vérifie que la base de donnée en ligne est accessible
