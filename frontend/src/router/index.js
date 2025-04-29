@@ -5,10 +5,32 @@ import Dashboard from '@/pages/Dashboard.vue';
 import Group from '@/pages/Group.vue';
 
 const routes = [
-  { path: '/', name: 'Home', component: Home },
-  { path: '/groups', name: 'Groups', component: Groups, meta: { requiresAuth: true } },
-  { path: '/group/:id', name: 'Group', component: Group, meta: { requiresAuth: true } },
-  { path: '/dashboard', name: 'Dashboard', component: Dashboard, meta: { requiresAuth: true } }
+    {
+        path: '/',
+        name: 'Home',
+        component: Home
+    },
+
+    {
+        path: '/groups',
+        name: 'Groups',
+        component: Groups,
+        meta: { requiresAuth: true }
+    },
+
+    {
+        path: '/group/:id',
+        name: 'Group',
+        component: Group,
+        meta: { requiresAuth: true }
+    },
+
+    {
+        path: '/dashboard',
+        name: 'Dashboard',
+        component: Dashboard,
+        meta: { requiresAuth: true }
+    }
 ];
 
 const router = createRouter({
@@ -16,7 +38,7 @@ const router = createRouter({
     routes
 });
 
-// 🔐 Protéger les routes privées
+// Protéger les routes privées
 router.beforeEach((to, from, next) => {
     const user = JSON.parse(localStorage.getItem('user'));
 
