@@ -12,15 +12,6 @@ app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static('uploads'));
 
-// Ping régulier pour empêcher Railway de dormir
-setInterval(async () => {
-    try {
-        const [res] = await pool.query('SELECT 1');
-        console.log('⏱️ Ping réussi : Railway réveillé');
-    } catch (err) {
-        console.error('⛔ Erreur ping Railway:', err);
-    }
-}, 5 * 60 * 1000); // 5 minutes
 
 // Vérifie que la base de donnée en ligne est accessible
 async function testDatabaseConnection() {
@@ -134,6 +125,16 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`🚀 Serveur démarré sur le port ${PORT}`);
 });
+
+// Ping régulier pour empêcher Railway de dormir
+setInterval(async () => {
+    try {
+        const [res] = await pool.query('SELECT 1');
+        console.log('⏱️ Ping réussi : Railway réveillé');
+    } catch (err) {
+        console.error('⛔ Erreur ping Railway:', err);
+    }
+}, 5 * 60 * 1000); // 5 minutes
 
 // Nettoyage automatique toutes les 24h
 setInterval(() => {
