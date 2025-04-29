@@ -388,6 +388,7 @@ router.post('/groups/:groupId/actions/:userId', upload.single('image'), async (r
     }
 });
 
+// Récupérer toutes les actions d'un groupe
 router.get('/groups/:groupId/actions', async (req, res) => {
     const { groupId } = req.params;
 
@@ -407,6 +408,7 @@ router.get('/groups/:groupId/actions', async (req, res) => {
     }
 });
 
+// Approuver une action et attribuer des points
 router.post('/groups/:groupId/assign-points/:actionId', async (req, res) => {
     const { groupId, actionId } = req.params;
     const { points } = req.body;
@@ -444,6 +446,30 @@ router.post('/groups/:groupId/assign-points/:actionId', async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Erreur lors de l'attribution des points." });
+    }
+});
+
+// Quitter un groupe
+router.post('/groups/:groupId/leave/:userId', async (req, res) => {
+    const { groupId, userId } = req.params;
+
+    try {
+        // Supprimer l'utilisateur du groupe
+        await pool.query(
+            'DELETE FROM user_groups WHERE user_id = ? AND group_id = ?',
+            [userId, groupId]
+        );
+
+        // Supprimer aussi la plante liée si tu veux nettoyer proprement
+        await pool.query(
+            'DELETE FROM plants WHERE user_id = ? AND group_id = ?',
+            [userId, groupId]
+        );
+
+        res.status(200).json({ success: true, message: 'Vous avez quitté le groupe.' });
+    } catch (error) {
+        console.error('Erreur lors du départ du groupe:', error);
+        res.status(500).json({ success: false, message: 'Erreur serveur lors du départ du groupe.' });
     }
 });
 

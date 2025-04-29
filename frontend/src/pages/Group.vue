@@ -109,6 +109,8 @@
                 <p>Aucune action en attente.</p>
             </div>
         </div>
+
+        <button @click="leaveGroup" class="leave-button">Quitter le Groupe</button>
     </div>
 </template>
 
@@ -354,6 +356,31 @@ export default {
 
         getImageUrl(imagePath) {
             return `https://green-it-production.up.railway.app${imagePath}`;
+        },
+
+        async leaveGroup() {
+            if (!confirm("Es-tu sûr de vouloir quitter ce groupe ?")) {
+                return;
+            }
+
+            const user = JSON.parse(localStorage.getItem('user'));
+            const groupId = this.$route.params.id;
+
+            try {
+                const response = await fetch(`https://green-it-production.up.railway.app/api/groups/${groupId}/leave/${user.id}`, {
+                    method: 'POST'
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    alert('Vous avez quitté le groupe avec succès !');
+                    this.$router.push('/groups'); // Rediriger vers la page des groupes
+                } else {
+                    alert('Erreur en quittant le groupe.');
+                }
+            } catch (error) {
+                console.error('Erreur lors du départ du groupe:', error);
+            }
         }
     }
 }
