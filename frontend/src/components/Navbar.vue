@@ -92,11 +92,6 @@
         gap: 15px;
     }
 
-    .logo {
-        width: 50px;
-        height: 50px;
-    }
-
     .site-title {
         font-size: 1.5rem;
         margin: 0;

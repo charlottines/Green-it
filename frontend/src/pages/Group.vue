@@ -203,7 +203,7 @@ export default {
             } else if (this.growth >= 70) {
                 stage = 3;
             }
-            this.plantImageUrl = `/src/assets/plant${this.plantId}-${stage}.png`;
+            this.plantImageUrl = `/plant${this.plantId}-${stage}.png`;
         },
 
         handleImageUpload(event) {
