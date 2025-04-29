@@ -87,7 +87,6 @@ export default {
                 case 1: return 'Plante Basique';
                 case 2: return 'Cactus';
                 case 3: return 'Tournesol';
-                default: return 'Inconnu';
             }
         },
 
@@ -219,11 +218,6 @@ h2, h3 {
     text-align: center;
     transition: transform 0.3s ease, background-color 0.3s ease;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-}
-
-.plant-card:hover {
-    transform: translateY(-5px);
-    background: rgba(129, 199, 132, 0.25);
 }
 
 .plant-card h3 {
