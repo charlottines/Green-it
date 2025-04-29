@@ -41,33 +41,23 @@
 </script>
 
 <style scoped>
-    /* Fond et structure principale */
     .about {
-        min-height: calc(100vh - 100px); /* pour éviter que le footer remonte */
-        background-color: rgb(30, 30, 30);
+        padding: 40px 20px;
+        max-width: 900px;
+        margin: 0 auto;
+        background-color: #1e1e1e;
         color: white;
-        padding: 20px;
         font-family: Arial, sans-serif;
     }
 
-    /* Titre principal */
     h1 {
-        font-size: 3rem;
-        color: rgb(129, 199, 132);
+        font-size: 2.5rem;
+        color: #81c784;
         text-align: center;
-        margin-bottom: 40px;
+        margin-bottom: 30px;
     }
 
-    /* Partie principale (sections) */
-    .about main {
-        max-width: 900px;
-        margin: 0 auto;
-        display: flex;
-        flex-direction: column;
-        gap: 40px;
-    }
-
-    /* Sections = les bulles */
+    /* Sections */
     section {
         background: rgba(255, 255, 255, 0.05);
         border: 1px solid rgba(255, 255, 255, 0.1);
@@ -77,31 +67,23 @@
         transition: transform 0.3s ease;
     }
 
-    /* Effet léger au survol */
-    section:hover {
-        transform: translateY(-5px);
-    }
-
-    /* Titre des sections */
     h2 {
-        font-size: 2rem;
-        color: rgb(129, 199, 132);
-        margin-bottom: 10px;
+        font-size: 1.8rem;
+        color: #81c784;
+        margin-bottom: 15px;
     }
 
-    /* Texte normal */
     p, li {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
         line-height: 1.6;
     }
 
-    /* Liste des membres */
     .team-list {
-        padding-left: 20px;
-        list-style: disc inside;
+        list-style: none;
+        padding-left: 0;
     }
 
-    .team-list li {
-        margin-bottom: 10px;
+    .team-list li::before {
+        margin-right: 8px;
     }
 </style>
