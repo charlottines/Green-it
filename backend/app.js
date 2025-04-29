@@ -120,6 +120,16 @@ app.get('/', (req, res) => {
     res.send('Bienvenue sur l\'API Planty 🌱');
 });
 
+// Ping régulier pour empêcher Railway de dormir
+setInterval(async () => {
+    try {
+        const [res] = await pool.query('SELECT 1');
+        console.log('⏱️ Ping réussi : Railway réveillé');
+    } catch (err) {
+        console.error('⛔ Erreur ping Railway:', err);
+    }
+}, 5 * 60 * 1000); // 5 minutes
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`🚀 Serveur démarré sur le port ${PORT}`);
@@ -128,4 +138,4 @@ app.listen(PORT, () => {
 // Nettoyage automatique toutes les 24h
 setInterval(() => {
     cleanupOldActions();
-}, 86400000); // 24h
+}, 3600 * 24 * 1000); // 24h

@@ -3,6 +3,7 @@ import Home from '@/pages/Home.vue'
 import Groups from '@/pages/Groups.vue'
 import Dashboard from '@/pages/Dashboard.vue'
 import Group from '@/pages/Group.vue'
+import About from '@/pages/About.vue'
 
 const routes = [
     {
@@ -27,6 +28,12 @@ const routes = [
         path: '/dashboard',
         name: 'Dashboard',
         component: Dashboard
+    },
+
+    {
+        path: '/',
+        name: 'About',
+        component: About
     }
 ]
 

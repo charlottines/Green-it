@@ -5,7 +5,7 @@ const multer = require('multer');
 const sharp = require('sharp');
 const fs = require('fs');
 
-const upload = multer({ dest: 'uploads/' }); // Dossier temporaire pour images
+const upload = multer({ dest: 'uploads/' }); // Dossier temporaire pour images des actions
 
 /*
     Fonctions
@@ -304,7 +304,7 @@ router.post('/groups/:groupId/choose-plant/:userId', async (req, res) => {
     }
 });
 
-//
+// Récupérer les points d'un utilisateur dans un groupe
 router.get('/groups/:groupId/points/:userId', async (req, res) => {
     const { groupId, userId } = req.params;
 
@@ -325,7 +325,7 @@ router.get('/groups/:groupId/points/:userId', async (req, res) => {
     }
 });
 
-// 
+// Utiliser des points pour faire grandir la plante
 router.post('/groups/:groupId/use-points/:userId', async (req, res) => {
     const { groupId, userId } = req.params;
     const { usedPoints } = req.body;
@@ -366,8 +366,8 @@ router.post('/groups/:groupId/actions/:userId', upload.single('image'), async (r
         if (req.file) {
             const filename = `action-${Date.now()}.webp`;
             await sharp(req.file.path)
-                .resize(500, 500, { fit: 'inside' }) // max 500x500px
-                .webp({ quality: 80 })               // compression qualité 80%
+                .resize(500, 500, { fit: 'inside' })
+                .webp({ quality: 80 })
                 .toFile(`uploads/${filename}`);
 
             // Supprimer l'image originale

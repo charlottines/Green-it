@@ -1,13 +1,16 @@
 <template>
-    <form @submit.prevent="handleRegister">
-        <input type="text" v-model="username" placeholder="Nom d'utilisateur" required />
-        <input type="email" v-model="email" placeholder="Email" required />
-        <input type="password" v-model="password" placeholder="Mot de passe" required />
-        <input type="password" v-model="confirmPassword" placeholder="Confirmer le mot de passe" required />
-        <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
-        <button type="submit">Créer un Compte</button>
-    </form>
+    <div class="form-container">
+        <form @submit.prevent="handleRegister">
+            <input type="text" v-model="username" placeholder="Nom d'utilisateur" required />
+            <input type="email" v-model="email" placeholder="Email" required />
+            <input type="password" v-model="password" placeholder="Mot de passe" required />
+            <input type="password" v-model="confirmPassword" placeholder="Confirmer le mot de passe" required />
+            <button type="submit">Créer un compte</button>
+            <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+        </form>
+    </div>
 </template>
+  
 
 <script>
     export default {
@@ -58,3 +61,54 @@
         }
     }
 </script>
+
+<style scoped>
+    .form-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        width: 100%;
+    }
+
+    form input {
+        padding: 10px;
+        border: 1px solid #555;
+        border-radius: 5px;
+        background-color: #1e1e1e;
+        color: white;
+    }
+
+    form input:focus {
+        outline: none;
+        border-color: #81c784;
+    }
+
+    form button {
+        padding: 10px;
+        background-color: #81c784;
+        color: #1e1e1e;
+        font-weight: bold;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    form button:hover {
+        background-color: #66bb6a;
+    }
+    
+    .error-message {
+        color: #ff6b6b;
+        margin-top: 10px;
+        font-size: 0.9rem;
+    }
+</style>
+
