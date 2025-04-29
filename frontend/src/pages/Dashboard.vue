@@ -5,6 +5,7 @@
         <div v-if="plants.length > 0" class="plants-list">
             <div v-for="plant in plants" :key="plant.groupName" class="plant-card">
                 <h3>{{ getPlantName(plant.plant_id) }}</h3>
+                <img :src="getPlantImage(plant.plant_id, plant.growth)" alt="Plante" class="plant-image" loading="lazy" />
                 <p><strong>Groupe :</strong> {{ plant.groupName }}</p>
                 <p><strong>Croissance :</strong> {{ plant.growth }}%</p>
             </div>
@@ -153,6 +154,18 @@ export default {
             } catch (error) {
                 console.error('Erreur modification compte:', error);
             }
+        },
+
+        getPlantImage(plantId, growth) {
+            let stage = 1;
+            if (growth >= 0 && growth < 30) {
+                stage = 1;
+            } else if (growth >= 30 && growth < 70) {
+                stage = 2;
+            } else if (growth >= 70) {
+                stage = 3;
+            }
+            return `/plant${plantId}-${stage}.png`;
         }
     }
 }
@@ -170,7 +183,7 @@ export default {
     }
 
     .plant-card {
-        background-color: #e0f2f1;
+        background-color: #8fffa5;
         padding: 15px;
         border-radius: 10px;
         width: 200px;
@@ -211,4 +224,10 @@ export default {
         border: 1px solid #ccc;
     }
 
+    .plant-image {
+        width: 100%;
+        height: auto;
+        margin-bottom: 10px;
+        border-radius: 5px;
+    }
 </style>

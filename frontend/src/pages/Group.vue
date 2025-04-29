@@ -111,6 +111,7 @@
         </div>
 
         <button @click="leaveGroup" class="leave-button">Quitter le Groupe</button>
+        <button v-if="role === 'admin'" @click="deleteGroup" class="delete-group-button">Supprimer le Groupe</button>
     </div>
 </template>
 
@@ -381,6 +382,31 @@ export default {
             } catch (error) {
                 console.error('Erreur lors du départ du groupe:', error);
             }
+        },
+
+        async deleteGroup() {
+            if (!confirm("Es-tu sûr de vouloir supprimer ce groupe ? (Cette action est irréversible)")) {
+                return;
+            }
+
+            const groupId = this.$route.params.id;
+
+            try {
+                const response = await fetch(`https://green-it-production.up.railway.app/api/groups/${groupId}`, {
+                    method: 'DELETE'
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('Groupe supprimé avec succès.');
+                    this.$router.push('/groups'); // Redirige vers la liste des groupes
+                } else {
+                    alert('Erreur lors de la suppression.');
+                }
+            } catch (error) {
+                console.error('Erreur lors de la suppression du groupe:', error);
+            }
         }
     }
 }
@@ -399,4 +425,20 @@ export default {
         height: auto;
         margin-top: 10px;
     }
+
+    .delete-group-button {
+        margin-top: 20px;
+        padding: 10px;
+        background-color: #ef5350;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .delete-group-button:hover {
+        background-color: #e53935;
+    }
+
 </style>

@@ -2,46 +2,44 @@
     <div class="groups-page">
         <h2>Mes Groupes</h2>
 
-        <div v-if="groups.length > 0">
-            <ul>
-                <li v-for="group in groups" :key="group.id">
-                    <router-link :to="`/group/${group.id}`">
-                        <strong>{{ group.name }}</strong> - <em>{{ group.role }}</em>
-                    </router-link>
-                </li>
-            </ul>
+        <div v-if="groups.length > 0" class="groups-list">
+            <div v-for="group in groups" :key="group.id" class="group-card">
+                <router-link :to="`/group/${group.id}`">
+                    <h3>{{ group.name }}</h3>
+                    <p>{{ group.description }}</p>
+                    <p class="role">Votre rôle : {{ group.role }}</p>
+                </router-link>
+            </div>
         </div>
 
         <div v-else>
-            <p>Aucun groupe trouvé pour l'instant.</p>
+            <p class="no-group">Aucun groupe trouvé pour l'instant.</p>
         </div>
 
-        <hr />
+        <div class="group-actions">
+            <section class="join-group">
+                <h3>Rejoindre un Groupe</h3>
+                <input type="text" v-model="joinCode" placeholder="Entrez le code à 6 chiffres" maxlength="6" />
+                <button @click="requestJoinGroup">Demander à rejoindre</button>
 
-        <div class="join-group">
-            <h3>Rejoindre un Groupe avec un Code</h3>
-            <input type="text" v-model="joinCode" placeholder="Entrez le code à 6 chiffres"  maxlength="6"/>
-            <button @click="requestJoinGroup">Demander à rejoindre</button>
+                <div v-if="joinMessage" :class="{ success: joinSuccess, error: !joinSuccess }">
+                    {{ joinMessage }}
+                </div>
+            </section>
 
-            <div v-if="joinMessage" :class="{ success: joinSuccess, error: !joinSuccess }">
-                {{ joinMessage }}
-            </div>
-        </div>
+            <section class="create-group">
+                <h3>Créer un Groupe</h3>
+                <input type="text" v-model="newGroupName" placeholder="Nom du groupe" required />
+                <input type="text" v-model="newGroupDescription" placeholder="Description (optionnel)" />
+                <button @click="createGroup">Créer le Groupe</button>
 
-        <hr />
-
-        <div class="create-group">
-            <h3>Créer un Nouveau Groupe</h3>
-            <input type="text" v-model="newGroupName" placeholder="Nom du groupe" required />
-            <input type="text" v-model="newGroupDescription" placeholder="Description (optionnel)" />
-            <button @click="createGroup">Créer le Groupe</button>
-
-            <div v-if="createMessage" :class="{ success: createSuccess, error: !createSuccess }">
-                {{ createMessage }}
-            </div>
+                <div v-if="createMessage" :class="{ success: createSuccess, error: !createSuccess }">
+                    {{ createMessage }}
+                </div>
+            </section>
         </div>
     </div>
-</template>
+</template>  
   
 <script>
     export default {
@@ -162,3 +160,130 @@
         }
     }
 </script>
+
+<style scoped>
+    .groups-page {
+        min-height: calc(100vh - 100px);
+        background-color: rgb(30, 30, 30);
+        padding: 20px;
+        color: white;
+        font-family: Arial, sans-serif;
+    }
+
+    h2 {
+        font-size: 2.5rem;
+        text-align: center;
+        color: rgb(129, 199, 132);
+        margin-bottom: 30px;
+    }
+
+    /* Liste des groupes */
+    .groups-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+        margin-bottom: 40px;
+    }
+
+    /* Carte de chaque groupe */
+    .group-card {
+        background: rgba(129, 199, 132, 0.15);
+        border: 1px solid rgba(129, 199, 132, 0.4);
+        border-radius: 15px;
+        width: 250px;
+        padding: 20px;
+        text-align: center;
+        transition: transform 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .group-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .group-card h3 {
+        color: rgb(129, 199, 132);
+        margin-bottom: 10px;
+    }
+
+    .group-card p {
+        font-size: 1rem;
+        margin-bottom: 5px;
+    }
+
+    .group-card .role {
+        font-style: italic;
+        font-size: 0.9rem;
+        color: #ccc;
+    }
+
+    /* Message si aucun groupe */
+    .no-group {
+        text-align: center;
+        font-style: italic;
+        margin-bottom: 40px;
+    }
+
+    /* Actions rejoindre / créer */
+    .group-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    /* Rejoindre / Créer un groupe */
+    .join-group, .create-group {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .join-group h3, .create-group h3 {
+        color: rgb(129, 199, 132);
+        margin-bottom: 15px;
+    }
+
+    input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        background-color: #1e1e1e;
+        border: 1px solid #555;
+        border-radius: 8px;
+        color: white;
+    }
+
+    button {
+        width: 100%;
+        padding: 10px;
+        background-color: rgb(129, 199, 132);
+        color: black;
+        font-weight: bold;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+        background-color: rgb(102, 187, 106);
+    }
+
+    /* Messages de succès et erreur */
+    .success {
+        color: #4CAF50;
+        margin-top: 10px;
+        font-weight: bold;
+    }
+
+    .error {
+        color: #f44336;
+        margin-top: 10px;
+        font-weight: bold;
+    }
+</style>
