@@ -16,11 +16,11 @@ Classe **I1-G/BN**
 
 Groupe 8 :
 
-- Inès MEHADHEBI
-- Bastien FRANJA
-- Kiroshan SIVAKUMAR
-- Maël LE BRIS
-- Paul SAADE
+- Inès MEHADHEBI (Frontend & Design)
+- Bastien FRANJA (Backend & Authentification)
+- Kiroshan SIVAKUMAR (Frontend & Structure)
+- Maël LE BRIS (Backend & Base de Donnée)
+- Paul SAADE (Backend & Appel API)
 
 Enseignant : **Safwan CHENDEB**
 
@@ -86,4 +86,10 @@ Le site fera l’objet d’une analyse d’empreinte carbone en utilisant :
 
 ## Installation & Déploiement
 
-...
+---
+
+## Contribution
+Toutes les contributions sont visibles via les Pull Requests du dépôt GitHub :
+https://github.com/username/planty/pulls
+
+
