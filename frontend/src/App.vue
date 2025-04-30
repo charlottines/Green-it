@@ -19,25 +19,9 @@
         mounted() {
             const user = localStorage.getItem('user');
             if (!user) {
-                // Si pas connecté, rediriger vers page d'accueil
+                // Si pas connectÃ©, rediriger vers page d'accueil
                 this.$router.push('/');
             }
         }
     }
 </script>
-
-<style scoped>
-    #app {
-        min-height: 100vh;
-        background-color: #1e1e1e;
-        font-family: 'Arial', sans-serif;
-        color: #f0f0f0;
-        padding: 16px;
-        box-sizing: border-box;
-    }
-
-    body {
-        margin: 0;
-        padding: 0;
-    }
-</style>
