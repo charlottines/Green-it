@@ -84,12 +84,10 @@ Le site fera l’objet d’une analyse d’empreinte carbone en utilisant :
 
 ---
 
-## Installation & Déploiement
+## Déploiement en ligne
 
+Le projet est entièrement déployé :
+
+- 🔗 Front-end (Vue.js) : [https://green-it-seven.vercel.app]
+- 🔗 API back-end (Node.js + MySQL sur Railway) : [https://green-it-production.up.railway.app]
 ---
-
-## Contribution
-Toutes les contributions sont visibles via les Pull Requests du dépôt GitHub :
-https://github.com/username/planty/pulls
-
-
