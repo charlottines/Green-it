@@ -19,7 +19,7 @@
         mounted() {
             const user = localStorage.getItem('user');
             if (!user) {
-                // Si pas connecté, rediriger vers page d'accueil
+                // Si pas connectÃ©, rediriger vers page d'accueil
                 this.$router.push('/');
             }
         }
